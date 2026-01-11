@@ -1,0 +1,12 @@
+{
+  "name": "mc-aternos-bot",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "mineflayer": "^4.16.0",
+    "node-telegram-bot-api": "^0.61.0"
+  }
+}
