@@ -9,15 +9,29 @@ const tgBot = new TelegramBot(TOKEN, { polling: true });
 
 let mcBot = null;
 
-// أوامر تيليجرام
+// أمر /start
 tgBot.onText(/\/start/, (msg) => {
   tgBot.sendMessage(msg.chat.id, "🤖 Bedrock Minecraft Bot Ready!\nCommands:\n/startserver IP PORT\n/stopserver");
 });
 
-tgBot.onText(/\/startserver (.+) (.+)/, (msg, match) => {
+// أمر /startserver مع IP و PORT (مرن)
+tgBot.onText(/\/startserver (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
-  const ip = match[1];
-  const port = parseInt(match[2]);
+
+  if (!match || !match[1]) {
+    tgBot.sendMessage(chatId, "⚠️ Please provide IP and PORT like: /startserver IP PORT");
+    return;
+  }
+
+  // نفصل IP و PORT من النص
+  const args = match[1].trim().split(/\s+/);
+  const ip = args[0];
+  const port = parseInt(args[1]);
+
+  if (!ip || !port) {
+    tgBot.sendMessage(chatId, "⚠️ Invalid IP or PORT. Example: /startserver play123.aternos.me 19132");
+    return;
+  }
 
   if (mcBot) {
     tgBot.sendMessage(chatId, "⚠️ Bot already running!");
@@ -29,7 +43,7 @@ tgBot.onText(/\/startserver (.+) (.+)/, (msg, match) => {
     host: ip,
     port: port,
     username: "AternosBot",
-    version: "1.21.131", // نسخة سيرفرك
+    version: "1.21.131",
     offline: false
   });
 
@@ -57,6 +71,7 @@ tgBot.onText(/\/startserver (.+) (.+)/, (msg, match) => {
   tgBot.sendMessage(chatId, "🚀 Connecting Bedrock bot...");
 });
 
+// أمر /stopserver
 tgBot.onText(/\/stopserver/, (msg) => {
   const chatId = msg.chat.id;
   if (!mcBot) {
